@@ -6,35 +6,71 @@ import { useCrisis } from '../context/CrisisContext';
 
 const HEALTHCARE_KB = {
     "first_aid": {
-        "bleeding": "Apply firm, steady pressure with a clean cloth. Elevate the wound. Seek medical help if bleeding doesn't stop.",
-        "burns": "Run cool (not cold) water over the burn for 10-20 mins. Do not use ice or butter. Cover loosely with sterile dressing.",
-        "choking": "Perform the Heimlich maneuver. For infants, use back blows and chest thrusts.",
-        "fracture": "Immobilize the limb. Do not try to realign. Apply ice to reduce swelling."
+        "bleeding": "Apply firm, steady pressure with a clean cloth. Elevate the wound if possible. Seek medical help if bleeding doesn't stop.",
+        "burns": "Run cool (not cold) water over the burn for 10-20 mins. Do not use ice, butter, or oil. Cover loosely with sterile, non-stick dressing.",
+        "choking": "Perform the Heimlich maneuver (abdominal thrusts). For infants, use back blows and chest thrusts. Call emergency services immediately.",
+        "fracture": "Immobilize the injured limb using a splint or sling. Do not try to realign the bone. Apply ice packs wrapped in cloth to reduce swelling.",
+        "snake_bite": "Keep the patient calm and still. Immobilize the bitten limb. Do NOT cut the wound or suck out venom. Transport to hospital immediately.",
+        "heart_attack": "Call emergency services. Have the person sit down and rest. If they are not allergic, give them an aspirin to chew. Begin CPR if they become unconscious."
+    },
+    "symptoms": {
+        "fever": "Rest and stay hydrated. Take paracetamol if uncomfortable. Seek medical attention if fever exceeds 103°F (39.4°C) or lasts more than 3 days.",
+        "headache": "Rest in a quiet, dark room. Hydrate with water. OTC pain relievers like paracetamol or ibuprofen may help. Seek help if headache is sudden and severe.",
+        "dehydration": "Drink oral rehydration solutions (ORS), water, or clear broths. Avoid caffeine and alcohol. Seek help if unable to keep fluids down."
+    },
+    "medicines": {
+        "diabetes": "We offer Accu-Chek strips, Metformin, and Insulin Glargine. Check the 'Medicines > Diabetes Care' section for stock.",
+        "ayurveda": "Our Ayurveda range includes Ashwagandha, Chyawanprash, and Triphala. Visit 'Medicines > Ayurveda' for details.",
+        "homeopathy": "Available remedies include Arnica Montana, Nux Vomica, and Arsenicum Album. See 'Medicines > Homeopathy'."
     },
     "blood": {
-        "donating": "Must be 18-65 yrs, weigh >45kg, and have no major illness. O- is the universal donor.",
-        "receiving": "O+ can receive from O+, O-. AB+ can receive from all groups (Universal Recipient)."
+        "donating": "Donors must be 18-65 years, weight >45kg, and generally healthy. Men can donate every 3 months, women every 4 months.",
+        "receiving": "O- is the universal donor for RBCs. AB+ is the universal recipient. Always match blood types for safety.",
+        "compatibility": "A+ -> A+, AB+; O+ -> O+, A+, B+, AB+; B+ -> B+, AB+; AB+ -> AB+ only (plasma universal donor)."
     },
-    "cpr": "Push hard and fast in the center of the chest (100-120 bpm). Use the rhythm of 'Stayin' Alive'.",
-    "emergency": "For life-threatening situations, use the SOS button. Call 108 (Medical) or 100 (Police)."
+    "app_features": {
+        "track": "You can track active units on the 'Global Map'. Click 'Track Unit' on any active request card in your dashboard.",
+        "request": "To request blood or oxygen, go to the 'Request' tab, fill the form, and your SOS will be broadcast to nearby resources.",
+        "map": "The Global Map shows real-time locations of Blood Banks, Ambulances, and active SOS signals. Use filters to narrow your search."
+    },
+    "cpr": "Hands-only CPR: Push hard and fast in the center of the chest (100-120 compressions/minute). Sync to the beat of 'Stayin' Alive'. Continue until help arrives.",
+    "emergency": "For immediate life-threatening emergencies, press the red SOS button in the header. Ambulance: 102/108, Police: 100."
 };
 
 const getLocalResponse = (query) => {
     const q = query.toLowerCase();
 
     // Emergency & CPR
-    if (q.includes('cpr') || q.includes('heart attack') || q.includes('cardiac')) return HEALTHCARE_KB.cpr;
-    if (q.includes('emergency') || q.includes('sos') || q.includes('ambulance') || q.includes('help')) return HEALTHCARE_KB.emergency;
+    if (q.includes('cpr') || q.includes('cardiac') || q.includes('unconscious')) return HEALTHCARE_KB.cpr;
+    if (q.includes('snake') || q.includes('bite')) return HEALTHCARE_KB.first_aid.snake_bite;
+    if (q.includes('heart attack') || q.includes('chest pain')) return HEALTHCARE_KB.first_aid.heart_attack;
+    if (q.includes('emergency') || q.includes('sos') || q.includes('help') || q.includes('ambulance') || q.includes('police')) return HEALTHCARE_KB.emergency;
 
     // First Aid
-    if (q.includes('bleed') || q.includes('cut') || q.includes('wound')) return HEALTHCARE_KB.first_aid.bleeding;
+    if (q.includes('bleed') || q.includes('cut') || q.includes('wound') || q.includes('hemorrhage')) return HEALTHCARE_KB.first_aid.bleeding;
     if (q.includes('burn') || q.includes('fire') || q.includes('scald')) return HEALTHCARE_KB.first_aid.burns;
-    if (q.includes('chok') || q.includes('stuck')) return HEALTHCARE_KB.first_aid.choking;
-    if (q.includes('fracture') || q.includes('broken') || q.includes('bone')) return HEALTHCARE_KB.first_aid.fracture;
+    if (q.includes('chok') || q.includes('stuck') || q.includes('breath')) return HEALTHCARE_KB.first_aid.choking;
+    if (q.includes('fracture') || q.includes('broke') || q.includes('bone')) return HEALTHCARE_KB.first_aid.fracture;
+
+    // Symptoms
+    if (q.includes('fever') || q.includes('temp') || q.includes('hot')) return HEALTHCARE_KB.symptoms.fever;
+    if (q.includes('headache') || q.includes('migraine') || q.includes('head')) return HEALTHCARE_KB.symptoms.headache;
+    if (q.includes('thirsty') || q.includes('dehydrat')) return HEALTHCARE_KB.symptoms.dehydration;
+
+    // Medicines & Categories
+    if (q.includes('diabetes') || q.includes('insulin') || q.includes('sugar')) return HEALTHCARE_KB.medicines.diabetes;
+    if (q.includes('ayurveda') || q.includes('herbal') || q.includes('ashwagandha')) return HEALTHCARE_KB.medicines.ayurveda;
+    if (q.includes('homeopathy') || q.includes('arnica')) return HEALTHCARE_KB.medicines.homeopathy;
 
     // Blood
-    if (q.includes('donat')) return HEALTHCARE_KB.blood.donating;
-    if (q.includes('receiv') || q.includes('transfusion') || q.includes('type')) return HEALTHCARE_KB.blood.receiving;
+    if (q.includes('donat') || q.includes('giving blood')) return HEALTHCARE_KB.blood.donating;
+    if (q.includes('receiv') || q.includes('transfusion') || q.includes('compatibility')) return HEALTHCARE_KB.blood.receiving;
+    if (q.includes('type') || q.includes('group')) return HEALTHCARE_KB.blood.compatibility;
+
+    // App Features
+    if (q.includes('track') || q.includes('location') || q.includes('where')) return HEALTHCARE_KB.app_features.track;
+    if (q.includes('request') || q.includes('need') || q.includes('get')) return HEALTHCARE_KB.app_features.request;
+    if (q.includes('map') || q.includes('view') || q.includes('pin')) return HEALTHCARE_KB.app_features.map;
 
     return null;
 };
@@ -55,76 +91,70 @@ const AIChatbot = () => {
 
     const handleSend = async () => {
         if (!input.trim()) return;
-        const userMsg = { role: 'user', text: input };
+
+        const originalInput = input; // Store input before clearing
+        const userMsg = { role: 'user', text: originalInput };
+
         setMessages(prev => [...prev, userMsg]);
         setInput('');
         setIsTyping(true);
 
-        const truncateResources = (res) => {
-            if (!res) return {};
-            const truncated = {};
-            Object.keys(res).forEach(key => {
-                if (Array.isArray(res[key])) {
-                    truncated[key] = res[key].slice(0, 5).map(item => ({
-                        name: item.name,
-                        location: item.location,
-                        type: item.type,
-                        status: item.status
-                    }));
-                }
-            });
-            return truncated;
-        };
+        // Simulate "Thinking" time for realism
+        // await new Promise(r => setTimeout(r, 600));
 
         try {
-            const response = await fetch('http://localhost:5000/api/chat', {
+            // Attempt to fetch from backend
+            const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    message: input,
+                    message: originalInput,
                     context: {
                         user: { username: user?.username || 'Guest' },
-                        resources: truncateResources(resources),
+                        resources: {}, // Minimized payload
                         emergencyLevel
                     }
                 })
             });
 
+            if (!response.ok) throw new Error('Backend offline');
+
             const data = await response.json();
+            setMessages(prev => [...prev, { role: 'bot', text: data.response }]);
 
-            if (!response.ok) throw new Error(data.message || 'Failed to connect to AI');
-
-            const query = input.toLowerCase();
-            let action = null;
-
-            // Optional: Maintain some hardcoded navigation logic if AI doesn't suggest it explicitly
-            if (query.includes('blood') || query.includes('map')) {
-                action = { label: 'View Live Blood Map', path: '/map?filter=bloodBanks' };
-            } else if (query.includes('food')) {
-                action = { label: 'View Food Map', path: '/food' };
-            } else if (query.includes('doctor')) {
-                action = { label: 'Consult Doctors', path: '/doctors' };
-            }
-
-            setMessages(prev => [...prev, { role: 'bot', text: data.response, action }]);
         } catch (err) {
-            console.error('Chat Error:', err);
-            const localResponse = getLocalResponse(input);
-            const fallbackMessage = localResponse
-                ? `⚠️ [OFFLINE MODE] Neural Matrix disconnected.\n\nManual Protocol: ${localResponse}`
-                : "I'm having trouble connecting to my neural matrix. Please check your connection or use specific keywords like 'CPR', 'Bleeding', or 'Burns' for manual protocols.";
+            // Fallback to sophisticated local logic
+            console.warn('Switching to offline protocol:', err);
 
-            setMessages(prev => [...prev, {
-                role: 'bot',
-                text: fallbackMessage
-            }]);
-        } finally {
-            setIsTyping(false);
+            setTimeout(() => {
+                const localResponse = getLocalResponse(originalInput);
+                let botResponse;
+
+                if (localResponse) {
+                    botResponse = {
+                        role: 'bot',
+                        text: `[OFFLINE PROTOCOL ACTIVE]\n\n${localResponse}`,
+                        action: null // Add consistent logic for actions later if needed
+                    };
+                } else {
+                    // Enhanced fallback for unknown queries
+                    botResponse = {
+                        role: 'bot',
+                        text: "I'm currently operating on a local mesh network and can't access the global neural matrix. \n\nI can still assist with:\n• First Aid (CPR, Burns, Bleeding)\n• Resource Protocols (Donating Blood, Triage)\n• Emergency Contacts",
+                    };
+                }
+
+                setMessages(prev => [...prev, botResponse]);
+                setIsTyping(false);
+            }, 1000); // Small delay for effect
+            return; // Exit early to avoid double setTyping(false)
         }
+
+        setIsTyping(false);
     };
 
     const suggestions = [
-        "First Aid for Bleeding", "Nearest Food Point", "How to give CPR", "Check Shelter Slots"
+        "First Aid for Bleeding", "How to give CPR", "Check Shelter Slots"
     ];
 
     return (

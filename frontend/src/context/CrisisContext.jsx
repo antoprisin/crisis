@@ -1395,8 +1395,8 @@ export const CrisisProvider = ({ children }) => {
   });
 
   const [activeRequests, setActiveRequests] = useState([
-    { id: 101, title: 'O+ Blood Required', type: 'Medical', priority: 'Critical', location: 'City North Hospital', time: Date.now() - 300000 },
-    { id: 102, title: 'Oxygen Units (5)', type: 'Medical', priority: 'Immediate', location: 'West Medical Wing', time: Date.now() - 600000 },
+    { id: 101, title: 'O+ Blood Required', type: 'Medical', priority: 'Critical', location: 'City North Hospital', coords: [13.1111, 80.2616], time: Date.now() - 300000 },
+    { id: 102, title: 'Oxygen Units (5)', type: 'Medical', priority: 'Immediate', location: 'West Medical Wing', coords: [13.0644, 80.2237], time: Date.now() - 600000 },
   ]);
 
   // Theme Management
@@ -1426,7 +1426,7 @@ export const CrisisProvider = ({ children }) => {
   useEffect(() => {
     const fetchResources = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/resources');
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/resources`);
         if (response.ok) {
           const data = await response.json();
           if (Object.keys(data).length > 0) {

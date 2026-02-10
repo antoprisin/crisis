@@ -106,7 +106,7 @@ const Sidebar = () => {
                     }}>
                         <Shield size={24} color="white" />
                     </div>
-                    LINK
+                    BLOOD LINK
                 </h2>
                 <div style={{ marginTop: '12px', display: 'flex', alignItems: 'center', gap: '8px', color: '#22c55e', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '1px' }}>
                     <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 10px #22c55e' }} />

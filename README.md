@@ -1,16 +1,128 @@
-# React + Vite
+# Blood Link - Crisis Management Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A comprehensive healthcare crisis management system with real-time tracking, AI assistance, and resource coordination.
 
-Currently, two official plugins are available:
+## 🏗️ Project Structure
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+```
+blood-link/
+├── frontend/              # React + Vite frontend application
+│   ├── src/
+│   │   ├── components/   # Reusable UI components
+│   │   ├── pages/        # Page components
+│   │   ├── context/      # React context providers
+│   │   ├── data/         # Static data and constants
+│   │   └── App.jsx       # Main app component
+│   ├── public/           # Static assets
+│   ├── index.html        # HTML entry point
+│   ├── vite.config.js    # Vite configuration
+│   └── package.json      # Frontend dependencies
+│
+├── backend/              # Node.js + Express backend
+│   ├── models/           # MongoDB models
+│   ├── index.js          # Server entry point
+│   ├── seed.js           # Database seeding script
+│   ├── .env              # Environment variables
+│   └── package.json      # Backend dependencies
+│
+├── package.json          # Root package for managing both
+└── README.md             # This file
+```
 
-## React Compiler
+## 🚀 Quick Start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
+- Node.js 18+ 
+- MongoDB (optional, for database features)
 
-## Expanding the ESLint configuration
+### Installation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+**Install all dependencies:**
+```bash
+npm run install:all
+```
+
+Or install separately:
+```bash
+# Frontend
+cd frontend
+npm install
+
+# Backend
+cd backend
+npm install
+```
+
+### Development
+
+Run both frontend and backend in **separate terminals**:
+
+**Terminal 1 - Frontend (Port 5173):**
+```bash
+cd frontend
+npm run dev
+```
+
+**Terminal 2 - Backend (Port 5000):**
+```bash
+cd backend
+npm start
+```
+
+The app will be available at `http://localhost:5173`
+
+### Environment Variables
+
+**Frontend** (`frontend/.env`):
+```env
+VITE_API_URL=http://localhost:5000
+```
+
+**Backend** (`backend/.env`):
+```env
+GROQ_API_KEY=your_groq_api_key_here
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/bloodlink
+```
+
+## 🌐 Deployment
+
+### Frontend Deployment (Vercel/Netlify)
+
+1. **Deploy the `frontend` folder**
+2. **Build command:** `npm run build`
+3. **Output directory:** `dist`
+4. **Environment variables:** 
+   - `VITE_API_URL` = Your backend URL
+
+### Backend Deployment (Railway/Render/Heroku)
+
+1. **Deploy the `backend` folder**
+2. **Start command:** `npm start`
+3. **Environment variables:**
+   - `GROQ_API_KEY` = Your Groq API key
+   - `MONGODB_URI` = Your MongoDB connection string
+   - `PORT` = 5000 (or auto-assigned)
+
+## 📦 Build for Production
+
+**Frontend:**
+```bash
+cd frontend
+npm run build
+```
+
+This creates an optimized production build in `frontend/dist/`
+
+## 🔧 Features
+
+- 🗺️ **Real-time Map Tracking** - Track blood banks, ambulances, and active requests
+- 🤖 **AI Medical Assistant** - Groq-powered chatbot for first aid and medical guidance
+- 🩸 **Blood Donation Management** - Request and donate blood with live coordination
+- 📱 **Responsive Design** - Works seamlessly on desktop, tablet, and mobile
+- 🌙 **Dark/Light Mode** - Theme switching support
+- 🔔 **Real-time Notifications** - Stay updated on critical events
+
+## 📝 License
+
+Private - All Rights Reserved

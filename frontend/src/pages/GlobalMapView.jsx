@@ -6,7 +6,7 @@ import { useCrisis } from '../context/CrisisContext';
 import { useLocation } from 'react-router-dom';
 
 const GlobalMapView = () => {
-    const { resources } = useCrisis();
+    const { resources, activeRequests } = useCrisis();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const initialFilter = queryParams.get('filter') || 'all';
@@ -51,12 +51,29 @@ const GlobalMapView = () => {
                 });
             });
         });
+
+        // Include Active Requests in the map data
+        activeRequests.forEach(req => {
+            if (req.coords) {
+                flatData.push({
+                    id: req.id,
+                    name: `REQUEST: ${req.title}`,
+                    location: req.location,
+                    coords: req.coords,
+                    type: 'Emergency',
+                    displayType: 'SOS Request',
+                    status: req.priority,
+                    category: 'requests'
+                });
+            }
+        });
+
         return flatData;
-    }, [resources]);
+    }, [resources, activeRequests]);
 
     const filteredData = useMemo(() => {
         return allData.filter(item => {
-            const matchesFilter = filter === 'all' || item.category === filter;
+            const matchesFilter = filter === 'all' || item.category === filter || (filter === 'requests' && item.category === 'requests');
             const searchLower = searchQuery.toLowerCase();
             const matchesSearch =
                 item.name.toLowerCase().includes(searchLower) ||
@@ -66,6 +83,24 @@ const GlobalMapView = () => {
             return matchesFilter && matchesSearch;
         });
     }, [filter, searchQuery, allData]);
+
+    useEffect(() => {
+        if (location.state && location.state.center) {
+            setMapCenter(location.state.center);
+            setMapZoom(location.state.zoom || 16);
+        }
+    }, [location.state]);
+
+    const trackingLines = useMemo(() => {
+        if (!userLocation) return [];
+        // Connect user to top 5 closest resources or all filtered resources
+        return filteredData.slice(0, 5).map(item => ({
+            from: userLocation,
+            to: item.coords,
+            color: item.status === 'Critical' ? '#ef4444' : 'var(--primary)',
+            animate: true
+        }));
+    }, [userLocation, filteredData]);
 
     return (
         <div style={{ padding: '40px' }}>
@@ -109,7 +144,7 @@ const GlobalMapView = () => {
             </div>
 
             <div style={{ height: '70vh', borderRadius: '24px', overflow: 'hidden', border: '1px solid var(--glass-border)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)', marginBottom: '40px' }}>
-                <InteractiveMap items={filteredData} center={mapCenter} userLocation={userLocation} zoom={mapZoom} />
+                <InteractiveMap items={filteredData} center={mapCenter} userLocation={userLocation} zoom={mapZoom} lines={trackingLines} />
             </div>
 
             <div style={{ marginBottom: '40px' }}>

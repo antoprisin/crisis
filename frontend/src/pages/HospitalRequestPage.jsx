@@ -204,9 +204,8 @@ const HospitalRequestPage = ({ type, title }) => {
                         </div>
                     </motion.div>
                 ) : (
-                    <motion.div
+                    <div
                         key="map"
-                        initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.98 }}
                         style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 400px) 1fr', gap: '24px', height: '600px' }}
                     >
                         <div className="glass-card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px', overflowY: 'auto' }}>
@@ -275,11 +274,11 @@ const HospitalRequestPage = ({ type, title }) => {
 
                         <div style={{ position: 'relative', height: '100%' }}>
                             <InteractiveMap
-                                items={markers}
+                                items={markers || []}
                                 userLocation={userLoc}
                                 center={userLoc}
-                                zoom={12}
-                                lines={markers.map(m => ({
+                                zoom={13}
+                                lines={(markers || []).slice(0, 5).map(m => ({
                                     from: userLoc,
                                     to: m.coords,
                                     color: 'var(--primary)',
@@ -295,7 +294,7 @@ const HospitalRequestPage = ({ type, title }) => {
                                 </div>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 )}
             </AnimatePresence>
         </div>

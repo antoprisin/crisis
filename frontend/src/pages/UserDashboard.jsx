@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Stethoscope, HeartPulse, AlertCircle, Phone, MessageCircle, Activity, ChevronRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Stethoscope, HeartPulse, AlertCircle, Phone, MessageCircle, Activity, ChevronRight, Droplet } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCrisis } from '../context/CrisisContext';
 
 const FeatureCard = ({ title, icon, path, desc, color }) => (
@@ -37,6 +37,7 @@ const FeatureCard = ({ title, icon, path, desc, color }) => (
 
 const UserDashboard = () => {
     const { addNotification, activeRequests } = useCrisis();
+    const navigate = useNavigate();
 
     const triggerSOS = () => {
         addNotification({
@@ -83,6 +84,13 @@ const UserDashboard = () => {
             </div>
 
             <div className="grid-cols-auto" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '32px' }}>
+                <FeatureCard
+                    title="Blood Request"
+                    icon={<Droplet />}
+                    path="/hospital/blood"
+                    desc="Urgent request for blood units directly to nearest banks."
+                    color="#ef4444"
+                />
                 <FeatureCard
                     title="Volunteer Doctors"
                     icon={<Stethoscope />}
@@ -132,7 +140,13 @@ const UserDashboard = () => {
                                 }}>
                                     {incident.priority.toUpperCase()}
                                 </div>
-                                <button className="btn-primary" style={{ padding: '10px 24px', fontSize: '0.85rem' }}>TRACK UNIT</button>
+                                <button
+                                    className="btn-primary"
+                                    style={{ padding: '10px 24px', fontSize: '0.85rem' }}
+                                    onClick={() => navigate('/map', { state: { center: incident.coords, zoom: 16 } })}
+                                >
+                                    TRACK UNIT
+                                </button>
                             </div>
                         </div>
                     )) : (
