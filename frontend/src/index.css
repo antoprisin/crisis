@@ -269,3 +269,105 @@ button {
     stroke-dashoffset: 0;
   }
 }
+
+/* =========================================
+   MOBILE RESPONSIVENESS & SIDEBAR LOGIC
+   ========================================= */
+
+/* Default: Desktop */
+.mobile-menu-btn {
+  display: none !important;
+}
+
+.mobile-close-btn {
+  display: none !important;
+}
+
+.sidebar-wrapper {
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  width: 280px;
+  background: var(--sidebar-bg);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+/* Mobile Screens (<= 1024px) */
+@media (max-width: 1024px) {
+  /* 1. Main Layout Adjustments */
+  .main-content.with-sidebar {
+    padding-left: 0 !important;
+  }
+  
+  .app-layout {
+    flex-direction: column;
+  }
+
+  /* 2. Sidebar Behavior */
+  .sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px; /* Sidebar width */
+    transform: translateX(-100%); /* Hidden by default */
+    z-index: 10000; /* Highest priority */
+    box-shadow: 20px 0 50px rgba(0,0,0,0.5);
+  }
+
+  .sidebar-wrapper.open {
+    transform: translateX(0); /* Slide in */
+  }
+
+  /* 3. Mobile Buttons */
+  .mobile-menu-btn {
+    display: flex !important;
+  }
+
+  .mobile-close-btn {
+    display: flex !important;
+  }
+
+  /* 4. Overlay */
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 9999; /* Below sidebar, above everything else */
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  /* 5. General Mobile Tweaks */
+  .container {
+    padding: 0 1rem;
+  }
+
+  h1 {
+    font-size: 2rem !important; /* Smaller headings */
+  }
+
+  /* Adjust Dashboard Grid for Mobile */
+  .grid-cols-auto {
+    grid-template-columns: 1fr !important; /* Stack cards */
+  }
+  
+  /* Hide unnecessary elements on mobile login to save space */
+  .mobile-hide {
+    display: none;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

@@ -5,6 +5,7 @@ import Sidebar from './components/Sidebar';
 import AIChatbot from './components/AIChatbot';
 import ContactButtons from './components/ContactButtons';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Menu } from 'lucide-react';
 
 // Pages
 import LoginPage from './pages/LoginPage';
@@ -23,14 +24,47 @@ import FAQPage from './pages/FAQPage';
 import ProfilePage from './pages/ProfilePage';
 
 const AppContent = () => {
-  const { user, notifications, removeNotification } = useCrisis();
+  const { user, notifications, removeNotification, isSidebarOpen, setIsSidebarOpen } = useCrisis();
+  const location = window.location;
 
   return (
     <div className="app-layout">
       {user && (
-        <div className="sidebar-wrapper" style={{ width: '280px', flexShrink: 0 }}>
-          <Sidebar />
-        </div>
+        <>
+          {/* Mobile Hamburger - Only visible on mobile via CSS */}
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setIsSidebarOpen(true)}
+            style={{
+              position: 'fixed',
+              top: '16px',
+              left: '16px',
+              zIndex: 9999, // Above almost everything
+              background: 'var(--surface)',
+              padding: '10px',
+              borderRadius: '12px',
+              border: '1px solid var(--glass-border)',
+              color: 'var(--text)',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+              display: 'none' // Hidden by default, shown in media query
+            }}
+          >
+            <Menu size={24} />
+          </button>
+
+          {/* Sidebar Wrapper - Conditional class for mobile */}
+          <div className={`sidebar-wrapper ${isSidebarOpen ? 'open' : ''}`}>
+            <Sidebar />
+          </div>
+
+          {/* Mobile Overlay */}
+          {isSidebarOpen && (
+            <div
+              className="sidebar-overlay"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
+        </>
       )}
 
       <div className={`main-content ${user ? 'with-sidebar' : ''}`} style={{ flex: 1, minHeight: '100vh', overflowY: 'auto' }}>
@@ -165,17 +199,7 @@ const AppContent = () => {
         </AnimatePresence>
       </div>
 
-      <style>{`
-        .sidebar-wrapper {
-          height: 100vh;
-          position: sticky;
-          top: 0;
-          z-index: 50;
-        }
-        .main-content.with-sidebar {
-           padding-left: 0; /* Removing padding because wrapper handles it */
-        }
-      `}</style>
+      <style>{``}</style>
     </div>
   );
 };

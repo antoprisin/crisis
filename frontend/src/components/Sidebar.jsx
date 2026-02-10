@@ -17,7 +17,8 @@ import {
     User,
     Sun,
     Moon,
-    Monitor
+    Monitor,
+    X
 } from 'lucide-react';
 import { useCrisis } from '../context/CrisisContext';
 
@@ -59,7 +60,7 @@ const ThemeSwitcher = () => {
 };
 
 const Sidebar = () => {
-    const { logout, user } = useCrisis();
+    const { logout, user, setIsSidebarOpen } = useCrisis();
 
     const navItems = user?.role === 'donor' ? [
         { icon: <Home size={20} />, label: 'Command Center', path: '/donor-dashboard' },
@@ -81,10 +82,16 @@ const Sidebar = () => {
         { icon: <HelpCircle size={20} />, label: 'FAQ Terminal', path: '/faq' },
     ];
 
+    const handleNavClick = () => {
+        if (window.innerWidth <= 1024) {
+            setIsSidebarOpen(false);
+        }
+    };
+
     return (
         <div style={{
-            width: '280px',
-            height: '100vh',
+            width: '100%',
+            height: '100%',
             background: 'var(--sidebar-bg)',
             borderRight: '1px solid var(--glass-border)',
             display: 'flex',
@@ -93,6 +100,22 @@ const Sidebar = () => {
             position: 'relative',
             zIndex: 100
         }}>
+            {/* Mobile Close Button */}
+            <button
+                className="mobile-close-btn"
+                onClick={() => setIsSidebarOpen(false)}
+                style={{
+                    position: 'absolute',
+                    top: '20px',
+                    right: '20px',
+                    background: 'transparent',
+                    color: 'var(--text-muted)',
+                    display: 'none' // Controlled by CSS
+                }}
+            >
+                <X size={24} />
+            </button>
+
             <div style={{ padding: '0 12px', marginBottom: '48px' }}>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <div style={{
@@ -135,6 +158,7 @@ const Sidebar = () => {
                         <NavLink
                             key={item.path + index}
                             to={item.path}
+                            onClick={handleNavClick}
                             style={({ isActive }) => ({
                                 display: 'flex',
                                 alignItems: 'center',

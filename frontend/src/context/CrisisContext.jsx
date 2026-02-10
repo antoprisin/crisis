@@ -14,6 +14,7 @@ export const CrisisProvider = ({ children }) => {
   });
   const [emergencyLevel, setEmergencyLevel] = useState('Critical');
   const [notifications, setNotifications] = useState([]);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Global Data Registry
   const [resources, setResources] = useState({
@@ -1484,6 +1485,8 @@ export const CrisisProvider = ({ children }) => {
       addNotification,
       removeNotification,
       activeRequests,
+      isSidebarOpen,
+      setIsSidebarOpen,
       broadcastRequest,
       resources,
       theme,
